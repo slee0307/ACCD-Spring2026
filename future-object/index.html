@@ -1,189 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>An Unknown Gaze</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>An Unknown Gaze</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    body {
-      background: #000;
-      color: #fff;
-      font-family: Helvetica, Arial, sans-serif;
-    }
+body {
+  background: #000;
+  color: #fff;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 18px;
+}
 
-    .wrap {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 120px 32px;
-      text-align: center;
-    }
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 160px 40px;
+  text-align: center;
+}
 
-    /* Hero */
-    .hero {
-      margin-bottom: 160px;
-    }
+.hero {
+  margin-bottom: 180px;
+}
 
-    h1 {
-      font-size: 56px;
-      font-weight: 500;
-      letter-spacing: -0.02em;
-    }
+h1 {
+  font-size: 72px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
 
-    .hero-sub {
-      margin-top: 16px;
-      font-size: 16px;
-      opacity: 0.6;
-    }
+.hero-sub {
+  margin-top: 16px;
+  opacity: 0.6;
+}
 
-    /* Sections */
-    .section {
-      margin-bottom: 140px;
-    }
+.section {
+  margin-bottom: 180px;
+}
 
-    h2 {
-      font-size: 20px;
-      margin-bottom: 24px;
-      font-weight: 500;
-    }
+h2 {
+  font-size: 28px;
+  margin-bottom: 40px;
+  font-weight: 500;
+}
 
-    p {
-      font-size: 16px;
-      line-height: 1.7;
-      max-width: 720px;
-      margin: 0 auto;
-      opacity: 0.9;
-    }
+p {
+  line-height: 1.8;
+  max-width: 820px;
+  margin: 0 auto 28px auto;
+  opacity: 0.9;
+}
 
-    .statement {
-      font-size: 20px;
-      max-width: 800px;
-    }
+.statement {
+  font-size: 26px;
+  max-width: 900px;
+}
 
-    /* Images */
-    figure {
-      margin-top: 32px;
-    }
+/* ===== CENTERED IMAGES ===== */
 
-    figure img {
-      width: 100%;
-      display: block;
-    }
+.center-image {
+  display: flex;
+  justify-content: center;
+  margin: 70px 0;
+}
 
-    figcaption {
-      margin-top: 8px;
-      font-size: 12px;
-      opacity: 0.5;
-    }
+.center-image img {
+  width: 100%;
+  max-width: 720px;
+  height: auto;
+}
 
-    /* Process images */
-    .image-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-      margin: 32px 0;
-    }
+.mood-image img {
+  max-width: 580px;
+}
 
-    .image-row img {
-      width: 100%;
-      display: block;
-    }
+/* ===== PROCESS GRID (EXHIBITION STYLE) ===== */
 
-    .caption {
-      font-size: 14px;
-      opacity: 0.6;
-      margin-top: 12px;
-    }
-  </style>
+.image-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin: 60px 0;
+}
+
+.image-row img {
+  width: 100%;
+  aspect-ratio: 1 / 1;      /* 🔥 정사각형 */
+  object-fit: cover;        /* 🔥 잘라서 맞춤 */
+  background: #111;
+}
+
+/* ===== ZOOMABLE ===== */
+
+.zoomable {
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.zoomable:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+/* ===== VIDEO ===== */
+
+.video-block {
+  margin-top: 80px;
+}
+
+video {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: block;
+}
+
+/* ===== MODAL ===== */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.96);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.close {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  font-size: 40px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.close:hover {
+  opacity: 1;
+}
+
+figcaption {
+  margin-top: 16px;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+</style>
 </head>
 
 <body>
 
-  <main class="wrap">
+<main class="wrap">
 
-    <!-- Hero -->
-    <section class="hero">
-      <h1>An Unknown Gaze</h1>
-      <p class="hero-sub">
-        A speculative object in a future of ambient and unaccountable machines
-      </p>
-    </section>
+<section class="hero">
+  <h1>An Unknown Gaze</h1>
+  <p class="hero-sub">
+    A speculative object in a future of quiet and unaccountable machines
+  </p>
+</section>
 
-    <!-- Statement -->
-    <section class="section">
-      <p class="statement">
-        Machines keep increasing, but we don’t know who controls them or why they move.
-        An unknown gaze becomes part of everyday life.
-      </p>
-    </section>
+<section class="section">
+  <p class="statement">
+    Machines are slowly becoming part of our environment.
+    They observe and collect data, but we often do not know who controls them.
+    An unknown gaze becomes normal in everyday life.
+  </p>
+</section>
 
-    <!-- Matrix -->
-    <section class="section">
-      <h2>Future Framing</h2>
-      <p>
-        This project begins with a 2D matrix mapping machine systems across two axes:
-        visible and invisible, controlled and neglected.
-      </p>
+<section class="section">
+  <h2>Future Framing</h2>
+  <p>
+    I started with a simple 2D matrix.
+    The axes are visible / invisible and controlled / neglected.
+    This helped me think about different futures in four segments.
+  </p>
 
-      <figure>
-        <img src="./assets/matrix.png" alt="Future Matrix">
-        <figcaption>
-          Visible / Invisible × Controlled / Neglected
-        </figcaption>
-      </figure>
-    </section>
+  <div class="center-image">
+    <img src="./assets/matrix.png" class="zoomable">
+  </div>
 
-    <!-- Selected Future -->
-    <section class="section">
-      <h2>Selected Future</h2>
-      <p>
-        I focus on a plausible future located in the invisible and neglected quadrant.
-        Machines operate quietly in everyday spaces, while their purposes and operators
-        remain unclear.
-      </p>
-    </section>
+  <figcaption>
+    Visible / Invisible × Controlled / Neglected
+  </figcaption>
+</section>
 
-    <!-- Object -->
-    <section class="section">
-      <h2>Speculative Object</h2>
-      <p>
-        The object represents a machine that is present but not fully legible.
-        It suggests observation without explanation and presence without accountability.
-      </p>
-    </section>
+<section class="section">
+  <h2>Selected Future</h2>
+  <p>
+    I selected a plausible future from the invisible and neglected quadrant.
+    I see this as a plausible future.
+    It is not extreme science fiction.
+    It is already starting to happen around us.
+    Many ambient sensors already exist in cities and public spaces.
+    We do not always know who operates them or how they use the data.
+    Because of this, the future feels realistic and close to the present.
 
-    <!-- Process -->
-    <section class="section">
-      <h2>Form & Process</h2>
+  </p>
+</section>
 
-      <div class="image-row">
-        <img src="./assets/blender-process-01.png" alt="Process 01">
-        <img src="./assets/blender-process-02.png" alt="Process 02">
-        <img src="./assets/blender-process-03.png" alt="Process 03">
-        <img src="./assets/blender-process-04.png" alt="Process 04">
-      </div>
+<section class="section">
+  <h2>Mood Board</h2>
 
-      <p class="caption">
-        Early Blender iterations focusing on form, scale, and presence rather than realism.
-      </p>
-    </section>
+  <p>
+    This image represents the atmosphere of the selected future.
+    The machines are not dramatic or violent.
+    They are quiet, neutral, and part of the background.
+    Their presence feels normal, but slightly uncomfortable.
+    The presence is quiet but constant.
+  </p>
 
-    <!-- Reflection -->
-    <section class="section">
-      <h2>Reflection</h2>
-      <p>
-        This project reflects on how invisible systems become normalized, and how
-        a constant but undefined gaze quietly reshapes everyday experience.
-      </p>
-    </section>
+  <div class="center-image mood-image">
+    <img src="./assets/mood-01.png" class="zoomable">
+  </div>
 
-  </main>
+  <figcaption>
+   References of ambient sensors, surveillance infrastructure, and invisible monitoring systems.
+  </figcaption>
+</section>
+
+<section class="section">
+  <h2>Speculative Object</h2>
+
+  <p>
+    The object represents an ambient sensor in this near future.
+    It does not clearly show what it does.
+    It feels present, but not fully understandable.
+    The form is simple and neutral.
+    Lenses suggest observation.
+    The goal was to create something quiet but slightly unsettling.
+
+  </p>
+</section>
+
+<section class="section">
+  <h2>Form & Process</h2>
+
+  <p>
+    I created several rough drafts in Blender.
+    I focused more on presence and shape than realism.
+    I wanted the object to feel integrated into space, not like a robot.
+  </p>
+
+  <div class="image-row">
+    <img src="./assets/blender-process-01.png" class="zoomable">
+    <img src="./assets/blender-process-02.png" class="zoomable">
+    <img src="./assets/blender-process-03.png" class="zoomable">
+    <img src="./assets/blender-process-04.png" class="zoomable">
+    <img src="./assets/blender-process-05.png" class="zoomable">
+    <img src="./assets/blender-process-06.png" class="zoomable">
+  </div>
+
+  <figure class="video-block">
+    <video controls autoplay muted loop playsinline>
+      <source src="./assets/render.mp4" type="video/mp4">
+    </video>
+    <figcaption>
+      Final rendered scene with simple lighting and an urban background reflecting the city we live in.
+    </figcaption>
+  </figure>
+
+</section>
+
+<section class="section">
+  <h2>Reflection</h2>
+  <p>
+    This project made me think about how invisible systems become normal.
+    When something is always present but not explained, it changes how we feel in a space.
+    The unknown gaze is not loud or dramatic.
+    It is quiet, constant, and part of everyday life.
+  </p>
+</section>
+
+</main>
+
+<!-- MODAL -->
+<div id="imageModal" class="modal">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+
+<script>
+const modal = document.getElementById("imageModal");
+const modalImg = document.getElementById("modalImage");
+const images = document.querySelectorAll(".zoomable");
+const closeBtn = document.querySelector(".close");
+
+images.forEach(img => {
+  img.addEventListener("click", () => {
+    modal.style.display = "flex";
+    modalImg.src = img.src;
+  });
+});
+
+closeBtn.onclick = () => modal.style.display = "none";
+
+modal.onclick = (e) => {
+  if (e.target === modal) modal.style.display = "none";
+};
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") modal.style.display = "none";
+});
+</script>
 
 </body>
 </html>
