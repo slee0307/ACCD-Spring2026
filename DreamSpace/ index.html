@@ -47,6 +47,43 @@ border-radius:6px;
 margin-top:50px;
 }
 
+/* slideshow */
+
+.slideshow-container{
+max-width:800px;
+position:relative;
+margin-top:20px;
+}
+
+.slide{
+display:none;
+}
+
+.slide img{
+width:100%;
+border-radius:6px;
+}
+
+.prev, .next{
+cursor:pointer;
+position:absolute;
+top:50%;
+padding:16px;
+color:white;
+font-weight:bold;
+font-size:20px;
+user-select:none;
+background:rgba(0,0,0,0.5);
+}
+
+.next{
+right:0;
+}
+
+.prev:hover, .next:hover{
+background:black;
+}
+
 </style>
 
 </head>
@@ -69,16 +106,18 @@ This project explores the idea of space as a dream environment where travel betw
 <h2>Initial Sketches</h2>
 
 <p>
-I began by sketching ideas for a dream environment in space. 
-The sketches explore portals, floating planets, and the possibility of traveling between different worlds.
+I began by sketching ideas for a dream environment in space.
 </p>
 
 <div class="image-grid">
+
 <img src="assets/sketch1.jpg">
 <img src="assets/sketch2.jpg">
+
 </div>
 
 </div>
+
 
 
 <div class="section">
@@ -86,30 +125,56 @@ The sketches explore portals, floating planets, and the possibility of traveling
 <h2>Unity Scene Development</h2>
 
 <p>
-Using Unity, I started building a space environment where objects float and portals connect different spaces.
-I experimented with lighting, bloom effects, and positioning of planets and portals to create a sense of depth and atmosphere.
+These screenshots document the process of building the dream space environment in Unity.
 </p>
 
-<div class="image-grid">
-<img src="assets/unity1.jpg">
-<img src="assets/unity2.jpg">
-<img src="assets/unity3.jpg">
+
+<div class="slideshow-container">
+
+<div class="slide">
+<img src="assets/unity1.png">
+</div>
+
+<div class="slide">
+<img src="assets/unity2.png">
+</div>
+
+<div class="slide">
+<img src="assets/unity3.png">
+</div>
+
+<div class="slide">
+<img src="assets/unity4.png">
+</div>
+
+<div class="slide">
+<img src="assets/unity5.png">
+</div>
+
+<div class="slide">
+<img src="assets/unity6.png">
+</div>
+
+<div class="slide">
+<img src="assets/unity7.png">
+</div>
+
+<div class="slide">
+<img src="assets/unity8.png">
+</div>
+
+<div class="slide">
+<img src="assets/unity9.png">
+</div>
+
+
+<a class="prev" onclick="plusSlides(-1)">❮</a>
+<a class="next" onclick="plusSlides(1)">❯</a>
+
 </div>
 
 </div>
 
-
-<div class="section">
-
-<h2>Experiments</h2>
-
-<p>
-During the process I tested different visual effects and spatial compositions.
-One key element was the portal, which represents the possibility of traveling between distant environments.
-The portal connects outer space with other landscapes such as deserts or other planets.
-</p>
-
-</div>
 
 
 <div class="section">
@@ -123,6 +188,33 @@ By introducing portals, the project imagines a world where movement between diff
 </p>
 
 </div>
+
+
+<script>
+
+let slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n){
+showSlides(slideIndex += n);
+}
+
+function showSlides(n){
+
+let slides = document.getElementsByClassName("slide");
+
+if(n > slides.length){slideIndex = 1}
+if(n < 1){slideIndex = slides.length}
+
+for(let i = 0; i < slides.length; i++){
+slides[i].style.display = "none";
+}
+
+slides[slideIndex-1].style.display = "block";
+
+}
+
+</script>
 
 
 </body>
