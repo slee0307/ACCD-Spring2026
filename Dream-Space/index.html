@@ -2,8 +2,9 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<title>Dream Space Project</title>
+<title>Dream Space</title>
 
 <style>
 
@@ -31,6 +32,8 @@ p{
 max-width:800px;
 }
 
+/* sketch images */
+
 .image-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
@@ -43,50 +46,77 @@ width:100%;
 border-radius:6px;
 }
 
-.section{
-margin-top:50px;
+/* unity + script layout */
+
+.dev-container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+margin-top:20px;
+}
+
+.dev-column{
+display:flex;
+flex-direction:column;
 }
 
 /* slideshow */
 
 .slideshow-container{
-max-width:800px;
 position:relative;
-margin-top:20px;
+width:100%;
 }
 
-.slide{
+.slideUnity,
+.slideScript{
 display:none;
 }
 
-.slide img{
+.slideshow-container img{
 width:100%;
+height:auto;
 border-radius:6px;
 }
 
-.prev, .next{
+/* arrows */
+
+.prev,.next{
 cursor:pointer;
 position:absolute;
 top:50%;
-padding:16px;
+padding:12px;
 color:white;
-font-weight:bold;
 font-size:20px;
+background:rgba(0,0,0,0.6);
 user-select:none;
-background:rgba(0,0,0,0.5);
+border-radius:4px;
 }
 
 .next{
 right:0;
 }
 
-.prev:hover, .next:hover{
-background:black;
+/* text under slides */
+
+.script-description{
+margin-top:15px;
+}
+
+.unity-description{
+margin-top:15px;
+}
+
+/* reflection */
+
+.reflection{
+max-width:800px;
+margin-top:20px;
 }
 
 </style>
 
 </head>
+
 
 
 <body>
@@ -97,16 +127,14 @@ background:black;
 My dream space is outer space. Space is a place that humans want to reach but cannot easily access.
 In my imagined world, people live in space and travel through portals that connect different environments.
 Through these portals, they can move from space to deserts or even to other planets.
-This project explores the idea of space as a dream environment where travel between worlds becomes possible.
 </p>
 
 
-<div class="section">
 
 <h2>Initial Sketches</h2>
 
 <p>
-I began by sketching ideas for a dream environment in space.
+I began by sketching ideas for my dream space environment.
 </p>
 
 <div class="image-grid">
@@ -116,101 +144,202 @@ I began by sketching ideas for a dream environment in space.
 
 </div>
 
-</div>
+
+<p><strong>Annotations</strong></p>
+
+<ul>
+
+<li>Space environment: the main dream space where players can float.</li>
+
+<li>Portal: connects space to a desert planet.</li>
+
+<li>Spaceship: an object flying toward the player.</li>
+
+<li>Floating movement: the player drifts in zero gravity.</li>
+
+</ul>
+
+<p>
+Through the portal, people can travel to another environment.
+</p>
+
+<p>
+Desert: a different planet with ground where people can walk and move.
+</p>
 
 
-
-<div class="section">
 
 <h2>Unity Scene Development</h2>
 
-<p>
-These screenshots document the process of building the dream space environment in Unity.
-</p>
 
+<div class="dev-container">
+
+
+<!-- UNITY COLUMN -->
+
+<div class="dev-column">
 
 <div class="slideshow-container">
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity1.png">
 </div>
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity2.png">
 </div>
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity3.png">
 </div>
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity4.png">
 </div>
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity5.png">
 </div>
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity6.png">
 </div>
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity7.png">
 </div>
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity8.png">
 </div>
 
-<div class="slide">
+<div class="slideUnity">
 <img src="assets/unity9.png">
 </div>
 
-
-<a class="prev" onclick="plusSlides(-1)">❮</a>
-<a class="next" onclick="plusSlides(1)">❯</a>
-
-</div>
+<a class="prev" onclick="plusUnity(-1)">❮</a>
+<a class="next" onclick="plusUnity(1)">❯</a>
 
 </div>
 
-
-
-<div class="section">
-
-<h2>Reflection</h2>
-
-<p>
-Through this project I explored the idea of space as a dream destination.
-Because humans cannot easily reach space, it becomes a symbolic dream environment.
-By introducing portals, the project imagines a world where movement between different environments becomes possible.
+<p class="unity-description">
+These screenshots document the process of building the dream space environment in Unity.
 </p>
 
 </div>
+
+
+
+<!-- SCRIPT COLUMN -->
+
+<div class="dev-column">
+
+<div class="slideshow-container">
+
+<div class="slideScript">
+<img src="assets/script1.png">
+</div>
+
+<div class="slideScript">
+<img src="assets/script2.png">
+</div>
+
+<div class="slideScript">
+<img src="assets/script3.png">
+</div>
+
+<div class="slideScript">
+<img src="assets/script4.png">
+</div>
+
+<a class="prev" onclick="plusScript(-1)">❮</a>
+<a class="next" onclick="plusScript(1)">❯</a>
+
+</div>
+
+<p class="script-description">
+These scripts control movement, portal interaction, and object behavior in the space environment.
+</p>
+
+</div>
+
+</div>
+
+<h2>Demo Video</h2>
+
+<p>
+This video demonstrates the dream space environment, including floating movement in space and traveling through portals to another planet.
+</p>
+
+<div class="video-container">
+
+<iframe 
+src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+frameborder="0"
+allowfullscreen>
+</iframe>
+
+</div>
+
+<h2>Reflection</h2>
+
+<p class="reflection">
+
+Through this project I explored how different environments can be connected through portals.
+The space environment allows floating movement, creating a feeling of zero gravity.
+In contrast, the desert planet introduces a grounded environment where people can walk and move.
+Designing these two environments allowed me to think about how spatial transitions can shape user experience.
+
+</p>
+
 
 
 <script>
 
-let slideIndex = 1;
-showSlides(slideIndex);
+let unityIndex = 1
+let scriptIndex = 1
 
-function plusSlides(n){
-showSlides(slideIndex += n);
+showUnity(unityIndex)
+showScript(scriptIndex)
+
+
+function plusUnity(n){
+showUnity(unityIndex += n)
 }
 
-function showSlides(n){
-
-let slides = document.getElementsByClassName("slide");
-
-if(n > slides.length){slideIndex = 1}
-if(n < 1){slideIndex = slides.length}
-
-for(let i = 0; i < slides.length; i++){
-slides[i].style.display = "none";
+function plusScript(n){
+showScript(scriptIndex += n)
 }
 
-slides[slideIndex-1].style.display = "block";
+
+function showUnity(n){
+
+let slides = document.getElementsByClassName("slideUnity")
+
+if(n > slides.length){unityIndex = 1}
+if(n < 1){unityIndex = slides.length}
+
+for(let i=0;i<slides.length;i++){
+slides[i].style.display="none"
+}
+
+slides[unityIndex-1].style.display="block"
+}
+
+
+
+function showScript(n){
+
+let slides = document.getElementsByClassName("slideScript")
+
+if(n > slides.length){scriptIndex = 1}
+if(n < 1){scriptIndex = slides.length}
+
+for(let i=0;i<slides.length;i++){
+slides[i].style.display="none"
+}
+
+slides[scriptIndex-1].style.display="block"
 
 }
 
