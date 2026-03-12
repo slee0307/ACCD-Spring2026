@@ -106,6 +106,36 @@ margin-top:15px;
 margin-top:15px;
 }
 
+/* video section */
+
+.video-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+margin-top:20px;
+}
+
+.video-container{
+position:relative;
+padding-bottom:56.25%;
+height:0;
+}
+
+.video-container iframe{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+border-radius:6px;
+}
+
+.video-description{
+margin-top:12px;
+color:#ddd;
+max-width:800px;
+}
+
 /* reflection */
 
 .reflection{
@@ -265,21 +295,52 @@ These scripts control movement, portal interaction, and object behavior in the s
 
 </div>
 
+
+
 <h2>Demo Video</h2>
 
 <p>
-This video demonstrates the dream space environment, including floating movement in space and traveling through portals to another planet.
+These videos demonstrate the dream space environment and interactions within the space.
 </p>
 
-<div class="video-container">
+<div class="video-grid">
 
+<div>
+
+<div class="video-container">
 <iframe 
-src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+src="https://www.youtube.com/embed/ny-pMaN9UoI"
 frameborder="0"
 allowfullscreen>
 </iframe>
+</div>
+
+<p class="video-description">
+This video shows exploring my dream space using VR.
+</p>
 
 </div>
+
+
+<div>
+
+<div class="video-container">
+<iframe 
+src="https://www.youtube.com/embed/_zI4EMCJzL0"
+frameborder="0"
+allowfullscreen>
+</iframe>
+</div>
+
+<p class="video-description">
+ In this scene, spaceships move around while the player floats in zero gravity. The player can move using the WASD keys. When approaching the portal, the player travels to another planet. On the new planet, the player can walk using the keyboard, and pressing the spacebar triggers other characters to appear from the portal. This interaction demonstrates the transition between different environments in the dream space.
+</p>
+
+</div>
+
+</div>
+
+
 
 <h2>Reflection</h2>
 
@@ -302,7 +363,6 @@ let scriptIndex = 1
 showUnity(unityIndex)
 showScript(scriptIndex)
 
-
 function plusUnity(n){
 showUnity(unityIndex += n)
 }
@@ -310,7 +370,6 @@ showUnity(unityIndex += n)
 function plusScript(n){
 showScript(scriptIndex += n)
 }
-
 
 function showUnity(n){
 
@@ -324,9 +383,8 @@ slides[i].style.display="none"
 }
 
 slides[unityIndex-1].style.display="block"
+
 }
-
-
 
 function showScript(n){
 
