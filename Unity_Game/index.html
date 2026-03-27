@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DreamSpace – Game Documentation</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #050505;
+      color: #ffffff;
+      line-height: 1.7;
+    }
+
+    header {
+      padding: 60px 20px;
+      text-align: center;
+      background: radial-gradient(circle, #111 0%, #000 100%);
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    section {
+      padding: 50px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h2 {
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .video {
+      margin: 20px 0;
+    }
+
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
+
+    .card {
+      background: #111;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 10px;
+    }
+
+    .highlight {
+      background: #111;
+      padding: 25px;
+      border-left: 3px solid #666;
+      margin-top: 20px;
+    }
+
+    .quote {
+      font-style: italic;
+      color: #aaa;
+    }
+
+    .system {
+      background: #0d0d0d;
+      padding: 20px;
+      border: 1px solid #222;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>DreamSpace</h1>
+  <p>Gravity, Resistance, and Perceptual Control</p>
+</header>
+
+<section>
+  <h2>Game Concept</h2>
+  <p>
+    DreamSpace evolves from its original form where users could freely move through space and travel between different planets using portals.
+    This version introduces a new layer: <strong>goals and constraints through gravitational forces and item collection</strong>.
+  </p>
+  <p>
+    A black hole continuously pulls everything inward, including the player. While being drawn toward it, the player must collect floating items and try to reach the black hole with a sufficient score.
+    The game focuses on the <strong>tension between being pulled and resisting that force</strong>—creating a fundamental conflict that shapes every moment of gameplay.
+  </p>
+</section>
+
+<section>
+  <h2>Core Goal</h2>
+  <ul>
+    <li>Collect as many floating food items as possible</li>
+    <li>Reach the black hole with a sufficient score</li>
+    <li>Pass through the black hole to the next level</li>
+    <li>If the score is too low → restart</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Game Mechanics</h2>
+
+  <div class="system">
+    <p><strong>Black Hole System</strong></p>
+    <ul>
+      <li>All objects are constantly pulled toward the black hole</li>
+      <li>The player cannot escape this force completely</li>
+      <li>Movement is always influenced by gravity</li>
+    </ul>
+  </div>
+
+  <div class="system">
+    <p><strong>Control System</strong></p>
+    <ul>
+      <li>Joystick → direction</li>
+      <li>Pressure (stress ball + FSR sensor) → speed / force</li>
+    </ul>
+  </div>
+
+  <div class="system">
+    <p><strong>Input Mapping</strong></p>
+    <ul>
+      <li>Weak pressure → fast movement</li>
+      <li>Strong pressure → slow movement</li>
+      <li>No pressure → pulled directly into black hole</li>
+    </ul>
+  </div>
+
+</section>
+
+<section>
+  <h2>Core Experience</h2>
+
+  <div class="highlight">
+    <p>
+      The player does not feel fully in control.
+      Instead, they experience constant tension between being pulled and resisting.
+    </p>
+
+    <p>
+      “I am being pulled.”<br>
+      “I have to resist.”<br>
+      “I need to apply force.”
+    </p>
+  </div>
+
+</section>
+
+<section>
+  <h2>Conceptual Framing</h2>
+  <p>
+    This game explores how systems interpret physical input and reshape perception.
+    The player does not directly control movement—instead, their physical force is translated into system behavior.
+  </p>
+
+  <p>
+    This creates a gap between intention and outcome, revealing how computational systems are not neutral,
+    but actively structure experience.
+  </p>
+</section>
+
+<section>
+  <h2>Gameplay Video</h2>
+  <div class="video">
+    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"></iframe>
+  </div>
+</section>
+
+<section>
+  <h2>Key Moments</h2>
+  <div class="video">
+    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"></iframe>
+  </div>
+</section>
+
+<section>
+  <h2>Playtest Feedback</h2>
+
+  <div class="card">
+    <p class="quote">"I felt like I was constantly being pulled. It was stressful but interesting."</p>
+  </div>
+
+  <div class="card">
+    <p class="quote">"The pressure control was confusing at first but made the experience more physical."</p>
+  </div>
+
+  <div class="card">
+    <p class="quote">"I liked collecting items, but I wanted more control."</p>
+  </div>
+
+</section>
+
+</body>
+</html>
