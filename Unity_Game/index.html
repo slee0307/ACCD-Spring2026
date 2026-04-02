@@ -83,28 +83,30 @@
 
 <header>
   <h1>DreamSpace</h1>
-  <p>Gravity, Resistance, and Perceptual Control</p>
+  <p>Gravity, Resistance, and Control</p>
 </header>
 
 <section>
   <h2>Game Concept</h2>
   <p>
     DreamSpace evolves from its original form where users could freely move through space and travel between different planets using portals.
+    You can view the original Dream Space version <a href="https://slee0307.github.io/ACCD-Spring2026/Dream-Space/" target="_blank" rel="noopener noreferrer">here</a>.
     This version introduces a new layer: <strong>goals and constraints through gravitational forces and item collection</strong>.
   </p>
   <p>
-    A black hole continuously pulls everything inward, including the player. While being drawn toward it, the player must collect floating items and try to reach the black hole with a sufficient score.
-    The game focuses on the <strong>tension between being pulled and resisting that force</strong>—creating a fundamental conflict that shapes every moment of gameplay.
+    A black hole continuously pulls everything inward, including the player. While being drawn toward it, the player must complete specific quests rather than collecting random items. For example, in the quest “Eat the hamburger set,” the player needs to collect a hamburger, fries, cola, and ketchup to progress to the next stage.
+  </p>
+  <p>
+    The game focuses on the <strong>tension between being pulled and resisting that force</strong>, creating a fundamental conflict that shapes every moment of gameplay.
   </p>
 </section>
 
 <section>
   <h2>Core Goal</h2>
   <ul>
-    <li>Collect as many floating food items as possible</li>
-    <li>Reach the black hole with a sufficient score</li>
-    <li>Pass through the black hole to the next level</li>
-    <li>If the score is too low → restart</li>
+    <li>Identify the current quest objective for the stage</li>
+    <li>Collect the specific food items required by that quest</li>
+    <li>Reach the black hole after completing the full set</li>
   </ul>
 </section>
 
@@ -112,28 +114,40 @@
   <h2>Game Mechanics</h2>
 
   <div class="system">
+    <p><strong>Quest System</strong></p>
+    <ul>
+      <li>Each stage gives the player a specific collection objective</li>
+      <li>Only the required food items count toward progression</li>
+      <li>Completing the quest unlocks access to the next stage</li>
+    </ul>
+  </div>
+
+  <div class="system">
     <p><strong>Black Hole System</strong></p>
     <ul>
       <li>All objects are constantly pulled toward the black hole</li>
       <li>The player cannot escape this force completely</li>
-      <li>Movement is always influenced by gravity</li>
+      <li>Movement is always influenced by gravity while pursuing quest items</li>
     </ul>
   </div>
 
   <div class="system">
     <p><strong>Control System</strong></p>
     <ul>
-      <li>Joystick → direction</li>
-      <li>Pressure (stress ball + FSR sensor) → speed / force</li>
+      <li>Potentiometer 1 → left and right movement</li>
+      <li>Potentiometer 2 → up and down movement</li>
+      <li>Button → collect item</li>
+      <li>Pressure sensor → control force toward or away from gravity</li>
     </ul>
   </div>
 
   <div class="system">
     <p><strong>Input Mapping</strong></p>
     <ul>
-      <li>Weak pressure → fast movement</li>
-      <li>Strong pressure → slow movement</li>
-      <li>No pressure → pulled directly into black hole</li>
+      <li>Potentiometer 1 adjusts the player's horizontal position</li>
+      <li>Potentiometer 2 adjusts the player's vertical position</li>
+      <li>Pressing the button collects a quest item on contact</li>
+      <li>Pressure sensor input changes the force of moving closer to or farther from the black hole</li>
     </ul>
   </div>
 
@@ -160,27 +174,21 @@
 <section>
   <h2>Conceptual Framing</h2>
   <p>
-    This game explores how systems interpret physical input and reshape perception.
-    The player does not directly control movement—instead, their physical force is translated into system behavior.
-  </p>
-
-  <p>
-    This creates a gap between intention and outcome, revealing how computational systems are not neutral,
-    but actively structure experience.
+    This game explores how systems respond to physical input and change the player's experience.
   </p>
 </section>
 
 <section>
   <h2>Gameplay Video</h2>
   <div class="video">
-    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"></iframe>
+      <iframe src="https://www.youtube.com/embed/IOoQiKUZ4gc" allowfullscreen></iframe>
   </div>
 </section>
 
 <section>
-  <h2>Key Moments</h2>
+    <h2>Player gameplay footage</h2>
   <div class="video">
-    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"></iframe>
+      <iframe src="https://www.youtube.com/embed/_flrMkc7C_g" allowfullscreen></iframe>
   </div>
 </section>
 
@@ -195,9 +203,6 @@
     <p class="quote">"The pressure control was confusing at first but made the experience more physical."</p>
   </div>
 
-  <div class="card">
-    <p class="quote">"I liked collecting items, but I wanted more control."</p>
-  </div>
 
 </section>
 
