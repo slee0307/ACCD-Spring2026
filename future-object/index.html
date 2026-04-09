@@ -158,6 +158,37 @@ figcaption {
   opacity: 0.6;
 }
 
+/* ===== FORM PROCESS ===== */
+
+#form-process {
+  margin-bottom: 180px;
+}
+
+.process-item {
+  max-width: 820px;
+  margin: 0 auto 80px auto;
+  text-align: left;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 28px;
+}
+
+.process-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 24px;
+  background: #111;
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  opacity: 0.5;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
 </style>
 </head>
 
@@ -245,32 +276,135 @@ figcaption {
   </p>
 </section>
 
-<section class="section">
-  <h2>Form & Process</h2>
+<section id="form-process">
 
-  <p>
-    I created several rough drafts in Blender.
-    I focused more on presence and shape than realism.
-    I wanted the object to feel integrated into space, not like a robot.
-  </p>
-
-  <div class="image-row">
-    <img src="./assets/blender-process-01.png" class="zoomable">
-    <img src="./assets/blender-process-02.png" class="zoomable">
-    <img src="./assets/blender-process-03.png" class="zoomable">
-    <img src="./assets/blender-process-04.png" class="zoomable">
-    <img src="./assets/blender-process-05.png" class="zoomable">
-    <img src="./assets/blender-process-06.png" class="zoomable">
+  <div class="process-item" style="text-align:center; border-top:none; padding-top:0;">
+    <h2>Process</h2>
   </div>
 
-  <figure class="video-block">
-    <video controls autoplay muted loop playsinline>
+ <div class="process-item" style="border-top:none; padding-top:0;">
+  <h3>Base Form</h3>
+  <img src="./assets/blender-process-01.png" class="zoomable" alt="base form">
+  <p>
+    A simple cube is used as the starting point. 
+    Scale is applied (Ctrl + A → Scale) to stabilize the proportions 
+    and establish the main body.
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>First Circular Cut</h3>
+  <img src="./assets/blender-process-01'.png" class="zoomable" alt="first boolean cut">
+  <p>
+    A cylinder intersects the cube. 
+    Boolean (Difference) creates the first circular opening. 
+    The mesh is cleaned in Edit Mode and edge loops are added for stability.
+  </p>
+  <p style="margin-top:12px;">
+    Reference: <a href="https://www.youtube.com/shorts/ONIGyHIzUjg" target="_blank" rel="noopener noreferrer" style="color:#fff;opacity:0.6;text-decoration:underline;">https://www.youtube.com/shorts/ONIGyHIzUjg</a>
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Multiple Openings</h3>
+  <img src="./assets/blender-process-02.png" class="zoomable" alt="multiple boolean cuts">
+  <p>
+    Additional Boolean cuts introduce holes in different sizes. 
+    The variation creates functional ambiguity.
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Panel Lines</h3>
+  <img src="./assets/blender-process-03'.png" class="zoomable" alt="panel line boolean">
+  <p>
+    Rectangular forms are placed on the surface. 
+    Boolean operations carve shallow panel lines, 
+    adding mechanical detail.
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Edge Softening & Extrude</h3>
+  <img src="./assets/blender-process-01''.png" class="zoomable" alt="bevel modifier">
+  <p>
+    A Bevel Modifier rounds the outer edges. 
+    The amount is adjusted to keep the form solid and industrial.
+    The lens frame is created by extruding the circular edge.
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Lens Element</h3>
+  <img src="./assets/blender-process-03.png" class="zoomable" alt="lens material">
+  <p>
+    A circular disc is inserted into the main opening. 
+    Glossy and Transmission values are adjusted 
+    to simulate a reflective lens surface.
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Wireframe Structure</h3>
+  <img src="./assets/blender-process-05.png" class="zoomable" alt="wireframe modifier">
+  <p>
+    A Wireframe Modifier exposes the inner structure, 
+    shifting the object toward a more technical presence.
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Environment Setup</h3>
+  <img src="./assets/blender-process-04.png" class="zoomable" alt="hdri setup">
+  <p>
+    An HDRI image from Poly Haven is connected 
+    to the World Shader using Environment Texture. 
+    This allows realistic lighting and reflections.
+  </p>
+  <p style="margin-top:12px;">
+    Reference: <a href="https://polyhaven.com/a/canary_wharf" target="_blank" rel="noopener noreferrer" style="color:#fff;opacity:0.6;text-decoration:underline;">https://polyhaven.com/a/canary_wharf</a>
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Object Duplication</h3>
+  <img src="./assets/blender-process-05'.png" class="zoomable" alt="object duplication">
+  <p>
+    The object is duplicated and distributed across the scene, 
+    suggesting a network rather than a single device.
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Scene Placement</h3>
+  <img src="./assets/blender-process-06.png" class="zoomable" alt="scene integration">
+  <p>
+    The objects are placed within the HDRI environment 
+    to test spatial presence and reflection.
+  </p>
+</div>
+
+<div class="process-item">
+  <h3>Camera Movement</h3>
+  <img src="./assets/blender-process-07.png" class="zoomable" alt="camera path">
+  <p>
+    A Bezier Curve defines the camera path. 
+    A Follow Path constraint animates an orbiting movement.
+  </p>
+  <p style="margin-top:12px;">
+    Reference: <a href="https://www.youtube.com/watch?v=1byaQygtcpc" target="_blank" rel="noopener noreferrer" style="color:#fff;opacity:0.6;text-decoration:underline;">https://www.youtube.com/watch?v=1byaQygtcpc</a>
+  </p>
+</div>
+
+  <div class="process-item" style="text-align:center;">
+    <h2>Final Rendered Video</h2>
+    <video controls autoplay muted loop playsinline style="width:100%;height:auto;display:block;margin-top:40px;">
       <source src="./assets/render.mp4" type="video/mp4">
     </video>
-    <figcaption>
+    <figcaption style="text-align:center;">
       Final rendered scene with simple lighting and an urban background reflecting the city we live in.
     </figcaption>
-  </figure>
+  </div>
 
 </section>
 
