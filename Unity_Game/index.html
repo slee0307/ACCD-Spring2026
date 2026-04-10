@@ -76,6 +76,36 @@
       border: 1px solid #222;
       margin-top: 20px;
     }
+
+    /* Lightbox overlay */
+    .lightbox-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .lightbox-overlay.active {
+      display: flex;
+    }
+    .lightbox-overlay img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+
+    /* Clickable images */
+    section img {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    section img:hover {
+      opacity: 0.85;
+    }
   </style>
 </head>
 
@@ -102,10 +132,17 @@
 </section>
 
 <section>
+  <h2>Conceptual Framing</h2>
+  <p>
+    This game explores how systems respond to physical input and change the player's experience.
+  </p>
+</section>
+
+<section>
   <h2>Core Goal</h2>
   <ul>
     <li>Identify the current quest objective for the stage</li>
-    <li>Collect the specific food items required by that quest</li>
+    <li>Collect all the specific food items required by that quest within 2 minutes</li>
     <li>Reach the black hole after completing the full set</li>
   </ul>
 </section>
@@ -134,61 +171,98 @@
   <div class="system">
     <p><strong>Control System</strong></p>
     <ul>
-      <li>Potentiometer 1 → left and right movement</li>
-      <li>Potentiometer 2 → up and down movement</li>
-      <li>Button → collect item</li>
-      <li>Pressure sensor → control force toward or away from gravity</li>
+      <li>Joystick → Left/right and up/down movement</li>
+      <li>Button → Collect item</li>
+      <li>Pressure sensor → Resist and push away from the black hole's gravitational pull</li>
     </ul>
   </div>
 
   <div class="system">
     <p><strong>Input Mapping</strong></p>
     <ul>
-      <li>Potentiometer 1 adjusts the player's horizontal position</li>
-      <li>Potentiometer 2 adjusts the player's vertical position</li>
+      <li>Joystick adjusts the player's horizontal and vertical position</li>
       <li>Pressing the button collects a quest item on contact</li>
-      <li>Pressure sensor input changes the force of moving closer to or farther from the black hole</li>
+      <li>Pressure sensor input controls the force to resist and push away from the black hole</li>
     </ul>
   </div>
 
 </section>
 
+
 <section>
-  <h2>Core Experience</h2>
-
-  <div class="highlight">
-    <p>
-      The player does not feel fully in control.
-      Instead, they experience constant tension between being pulled and resisting.
-    </p>
-
-    <p>
-      “I am being pulled.”<br>
-      “I have to resist.”<br>
-      “I need to apply force.”
-    </p>
-  </div>
-
+  <h2>Control System</h2>
+  <img src="asset/control1.jpeg" alt="Controller version 1" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+  <img src="asset/control2.jpeg" alt="Controller version 2" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+  <p>
+    The first controller used two potentiometers to control left/right and up/down movement. However, it was too difficult to operate precisely, so the input was replaced with a joystick for smoother and more intuitive control. (Much better!!)
+  </p>
 </section>
 
 <section>
-  <h2>Conceptual Framing</h2>
-  <p>
-    This game explores how systems respond to physical input and change the player's experience.
-  </p>
+  <h2>Process & Development</h2>
+
+  <div class="card">
+    <img src="asset/1.png" alt="Step 1" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+    <p>Reference images of objects were collected and converted into 3D models to be used as in-game items.</p>
+  </div>
+
+  <div class="card">
+    <img src="asset/2.png" alt="Step 2" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+    <p>NPC and collectible items were placed throughout the environment.</p>
+  </div>
+
+  <div class="card">
+    <img src="asset/3.png" alt="Step 3" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+    <p>A quest UI was implemented to guide the player.</p>
+  </div>
+
+  <div class="card">
+    <img src="asset/3-1.png" alt="Step 3-1" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+    <p>This script controls player movement, combining Arduino input and keyboard controls to simulate zero-gravity navigation, item collection, and interaction with a black hole force system.</p>
+  </div>
+
+  <div class="card">
+    <img src="asset/4.png" alt="Step 4" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+    <p>Score, timer, and position indicators were added to the interface. Each item gives 10 points, and the game has a 2-minute time limit. A fail screen with sound appears automatically when time runs out. Position indicators were used to help track NPCs in a zero-gravity environment.</p>
+  </div>
+
+  <div class="card">
+    <img src="asset/5.png" alt="Step 5" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+    <p>Once all items are collected, the player can enter the portal.</p>
+  </div>
+
+  <div class="card">
+    <img src="asset/6.png" alt="Step 6" style="width:100%; border-radius:10px; margin-bottom:10px;" />
+    <p>The player arrives on another planet through the portal.</p>
+  </div>
+
 </section>
 
 <section>
   <h2>Gameplay Video</h2>
   <div class="video">
-      <iframe src="https://www.youtube.com/embed/IOoQiKUZ4gc" allowfullscreen></iframe>
+      <iframe src="https://www.youtube.com/embed/ZlWR_UVPPf4" allowfullscreen></iframe>
   </div>
 </section>
 
 <section>
     <h2>Player gameplay footage</h2>
-  <div class="video">
-      <iframe src="https://www.youtube.com/embed/_flrMkc7C_g" allowfullscreen></iframe>
+  <div class="slider" style="position:relative; overflow:hidden;">
+    <div class="slides" id="playerSlides" style="display:flex; transition:transform 0.4s ease;">
+      <div class="video" style="min-width:100%;">
+        <iframe src="https://www.youtube.com/embed/PcsH_jr21SU" allowfullscreen></iframe>
+      </div>
+      <div class="video" style="min-width:100%;">
+        <iframe src="https://www.youtube.com/embed/Bjz3m-BesN0" allowfullscreen></iframe>
+      </div>
+      <div class="video" style="min-width:100%;">
+        <iframe src="https://www.youtube.com/embed/_flrMkc7C_g" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:15px;">
+      <button onclick="moveSlide(-1)" style="background:#222; color:#fff; border:1px solid #444; padding:8px 20px; margin:0 5px; border-radius:5px; cursor:pointer; font-size:16px;">&#9664; Prev</button>
+      <button onclick="moveSlide(1)" style="background:#222; color:#fff; border:1px solid #444; padding:8px 20px; margin:0 5px; border-radius:5px; cursor:pointer; font-size:16px;">Next &#9654;</button>
+    </div>
   </div>
 </section>
 
@@ -205,6 +279,36 @@
 
 
 </section>
+
+<div class="lightbox-overlay" id="lightbox">
+  <img id="lightbox-img" src="" alt="Enlarged image" />
+</div>
+
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+
+  document.querySelectorAll('section img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.classList.add('active');
+    });
+  });
+
+  lightbox.addEventListener('click', () => {
+    lightbox.classList.remove('active');
+  });
+
+  // Player footage slider
+  let currentSlide = 0;
+  const slides = document.getElementById('playerSlides');
+  const totalSlides = slides.children.length;
+
+  function moveSlide(dir) {
+    currentSlide = Math.max(0, Math.min(currentSlide + dir, totalSlides - 1));
+    slides.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+  }
+</script>
 
 </body>
 </html>

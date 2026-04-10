@@ -143,6 +143,55 @@ max-width:800px;
 margin-top:20px;
 }
 
+/* lightbox modal */
+
+.lightbox-overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+cursor:zoom-out;
+opacity:0;
+pointer-events:none;
+transition:opacity 0.3s;
+}
+
+.lightbox-overlay.active{
+opacity:1;
+pointer-events:auto;
+}
+
+.lightbox-overlay img{
+max-width:90%;
+max-height:90%;
+border-radius:8px;
+box-shadow:0 0 30px rgba(255,255,255,0.15);
+cursor:default;
+}
+
+.lb-prev,.lb-next{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+padding:16px;
+color:white;
+font-size:28px;
+background:rgba(0,0,0,0.6);
+cursor:pointer;
+user-select:none;
+border-radius:4px;
+z-index:10000;
+}
+
+.lb-prev{ left:20px; }
+.lb-next{ right:20px; }
+
 </style>
 
 </head>
@@ -213,38 +262,57 @@ Desert: a different planet with ground where people can walk and move.
 
 <div class="slideUnity">
 <img src="assets/unity1.png">
+<p class="unity-description">A circular shape was used to simulate asteroids flying toward the player. It was turned into a prefab and scripted to spawn multiple objects.
 </div>
 
 <div class="slideUnity">
 <img src="assets/unity2.png">
+<p class="unity-description">A portal was created with emission applied to give it a glowing effect.</p>
 </div>
 
 <div class="slideUnity">
 <img src="assets/unity3.png">
+<p class="unity-description">Asteroids were placed in front of the portal to test the flying motion.</p>
 </div>
 
 <div class="slideUnity">
 <img src="assets/unity4.png">
+<p class="unity-description">A rotating swirl pattern was added near the portal to create a dynamic effect.</p>
 </div>
 
 <div class="slideUnity">
 <img src="assets/unity5.png">
+<p class="unity-description">Layout of the portal and swirl elements.</p>
 </div>
 
 <div class="slideUnity">
 <img src="assets/unity6.png">
+<p class="unity-description">The asteroid visuals were replaced with a spaceship asset for a better result.</p>
 </div>
 
 <div class="slideUnity">
 <img src="assets/unity7.png">
+<p class="unity-description">Error...</p>
 </div>
 
 <div class="slideUnity">
 <img src="assets/unity8.png">
+<p class="unity-description">Particles were added around the portal to enhance the visual effect.</p>
 </div>
 
 <div class="slideUnity">
 <img src="assets/unity9.png">
+<p class="unity-description">A desert environment with sand and sky was set up to represent a new planet after passing through the portal.</p>
+</div>
+
+<div class="slideUnity">
+<img src="assets/unity10.png">
+<p class="unity-description">The sky was replaced with a space background to better match the environment.</p>
+</div>
+
+<div class="slideUnity">
+<img src="assets/unity11.png">
+<p class="unity-description">A human asset was downloaded and used to test a character emerging from the portal.</p>
 </div>
 
 <a class="prev" onclick="plusUnity(-1)">❮</a>
@@ -252,8 +320,10 @@ Desert: a different planet with ground where people can walk and move.
 
 </div>
 
-<p class="unity-description">
-These screenshots document the process of building the dream space environment in Unity.
+<p style="margin-top:15px; color:#aaa; font-size:14px;">
+<strong>Reference</strong><br>
+Space Scene: <a href="https://assetstore.unity.com/packages/2d/textures-materials/sky/spaceskies-free-80503" target="_blank" style="color:#6cf;">https://assetstore.unity.com/packages/2d/textures-materials/sky/spaceskies-free-80503</a><br>
+SpaceShip: <a href="https://assetstore.unity.com/packages/3d/vehicles/space/federation-corvette-f3-79860" target="_blank" style="color:#6cf;">https://assetstore.unity.com/packages/3d/vehicles/space/federation-corvette-f3-79860</a>
 </p>
 
 </div>
@@ -268,28 +338,33 @@ These screenshots document the process of building the dream space environment i
 
 <div class="slideScript">
 <img src="assets/script1.png">
+<p class="script-description">PortalToPlanet controls the transition between scenes when the player enters the portal. When the player touches the portal, the script detects the collision and loads the next scene (PlanetWorld).</p>
 </div>
 
 <div class="slideScript">
 <img src="assets/script2.png">
+<p class="script-description">AsteroidSpawner controls the spawning of asteroids around the scene. Objects are generated at set intervals and given random positions and forces to create a natural flying motion.</p>
 </div>
 
 <div class="slideScript">
 <img src="assets/script3.png">
+<p class="script-description">PortalRotate applies continuous rotation to the portal object to give it a dynamic and active appearance.</p>
 </div>
 
 <div class="slideScript">
 <img src="assets/script4.png">
+<p class="script-description">PortalSpin adds a spinning motion to elements around the portal, enhancing the swirling visual effect.</p>
+</div>
+
+<div class="slideScript">
+<img src="assets/script5.png">
+<p class="script-description">Gravity behavior is controlled at the scene level, switching between zero-gravity movement in space and grounded navigation in the planet environment.</p>
 </div>
 
 <a class="prev" onclick="plusScript(-1)">❮</a>
 <a class="next" onclick="plusScript(1)">❯</a>
 
 </div>
-
-<p class="script-description">
-These scripts control movement, portal interaction, and object behavior in the space environment.
-</p>
 
 </div>
 
@@ -401,6 +476,63 @@ slides[scriptIndex-1].style.display="block"
 
 }
 
+</script>
+
+<!-- lightbox modal -->
+<div class="lightbox-overlay" id="lightbox">
+<a class="lb-prev" id="lb-prev">❮</a>
+<img id="lightbox-img" src="" alt="">
+<a class="lb-next" id="lb-next">❯</a>
+</div>
+
+<script>
+var lbImages=[]
+var lbIndex=0
+var allImages=document.querySelectorAll('.image-grid img, .slideshow-container img')
+
+allImages.forEach(function(img,i){
+img.style.cursor='zoom-in'
+img.addEventListener('click',function(){
+lbImages=Array.from(allImages)
+lbIndex=lbImages.indexOf(this)
+var overlay=document.getElementById('lightbox')
+var lbImg=document.getElementById('lightbox-img')
+lbImg.src=this.src
+overlay.classList.add('active')
+})
+})
+
+document.getElementById('lb-prev').addEventListener('click',function(e){
+e.stopPropagation()
+lbIndex=(lbIndex-1+lbImages.length)%lbImages.length
+document.getElementById('lightbox-img').src=lbImages[lbIndex].src
+})
+
+document.getElementById('lb-next').addEventListener('click',function(e){
+e.stopPropagation()
+lbIndex=(lbIndex+1)%lbImages.length
+document.getElementById('lightbox-img').src=lbImages[lbIndex].src
+})
+
+document.getElementById('lightbox').addEventListener('click',function(e){
+if(e.target===this){
+this.classList.remove('active')
+}
+})
+
+document.addEventListener('keydown',function(e){
+var overlay=document.getElementById('lightbox')
+if(!overlay.classList.contains('active')) return
+if(e.key==='ArrowLeft'){
+lbIndex=(lbIndex-1+lbImages.length)%lbImages.length
+document.getElementById('lightbox-img').src=lbImages[lbIndex].src
+}else if(e.key==='ArrowRight'){
+lbIndex=(lbIndex+1)%lbImages.length
+document.getElementById('lightbox-img').src=lbImages[lbIndex].src
+}else if(e.key==='Escape'){
+overlay.classList.remove('active')
+}
+})
 </script>
 
 
