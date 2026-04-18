@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Perception Interface - Projection Mode</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #000;
+        font-family: 'Courier New', Courier, monospace;
+        color: white;
+      }
+      canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      #control-panel {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 600px;
+        background: rgba(20, 20, 20, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      
+      .control-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .control-group:last-child {
+        margin-bottom: 0;
+      }
+      
+      .control-label {
+        flex: 1;
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+      
+      .control-slider {
+        flex: 2;
+        margin: 0 15px;
+        -webkit-appearance: none;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        outline: none;
+      }
+      
+      .control-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #ff3333;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(255, 50, 50, 0.8);
+      }
+
+      .control-value {
+        width: 40px;
+        text-align: right;
+        font-size: 14px;
+        font-weight: bold;
+        color: #ff3333;
+      }
+
+      .control-select {
+        flex: 2;
+        margin: 0 15px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #ff3333;
+        border: 1px solid rgba(255, 50, 50, 0.5);
+        padding: 5px 10px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 4px;
+        outline: none;
+        cursor: pointer;
+      }
+      .control-select option {
+        background: #111;
+        color: white;
+      }
+
+      #instruction-text {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 10;
+        color: rgba(255, 255, 255, 0.5); /* 텍스트도 프로젝션을 위해 연하게 조정 */
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 16px;
+        font-style: italic;
+        line-height: 1.6;
+        max-width: 320px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="instruction-text">
+      SYSTEM READY<br>Awaiting optical input...
+    </div>
+
+    <div id="control-panel">
+      <div class="control-group">
+        <div class="control-label">CAMERA SOURCE</div>
+        <select id="cameraSelect" class="control-select">
+          <option value="">Searching...</option>
+        </select>
+        <div class="control-value"></div>
+      </div>
+      
+      <div class="control-group">
+        <div class="control-label">DATA VIEW</div>
+        <select id="numberViewSelect" class="control-select">
+          <option value="none">NONE (Color Only)</option>
+          <option value="confidence">CONFIDENCE (%)</option>
+          <option value="pattern">PATTERN (RAW VALUE)</option>
+        </select>
+        <div class="control-value"></div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">FOCUS INTENSITY</div>
+        <input type="range" id="focusSlider" class="control-slider" min="10" max="100" value="70">
+        <div class="control-value" id="focusVal">70</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">PATTERN DETAIL</div>
+        <input type="range" id="patternSlider" class="control-slider" min="10" max="100" value="40">
+        <div class="control-value" id="patternVal">40</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">EDGE PRIORITY</div>
+        <input type="range" id="edgeSlider" class="control-slider" min="0" max="100" value="40">
+        <div class="control-value" id="edgeVal">40</div>
+      </div>
+    </div>
+
+    <script>
+      let video, classifier;
+      let predictions = [];
+      let modelLoaded = false;
+      let labelHistory = [];
+
+      let feedbackIntensity = 0; 
+      let noiseZ = 0; 
+
+      const lakeKeywords = ["lake", "ocean", "water", "seashore", "river", "sea"];
+
+      let focusSlider, patternSlider, edgeSlider, numberViewSelect, cameraSelect;
+      let focusVal, patternVal, edgeVal;
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+
+        video = createCapture(VIDEO);
+        video.size(640, 480);
+        video.hide();
+
+        classifier = ml5.imageClassifier("MobileNet", video, () => {
+          modelLoaded = true;
+          classifyFrame();
+        });
+
+        focusSlider = select('#focusSlider');
+        patternSlider = select('#patternSlider');
+        edgeSlider = select('#edgeSlider');
+        numberViewSelect = select('#numberViewSelect');
+        cameraSelect = select('#cameraSelect'); 
+        
+        focusVal = select('#focusVal');
+        patternVal = select('#patternVal');
+        edgeVal = select('#edgeVal');
+
+        focusSlider.input(() => focusVal.html(focusSlider.value()));
+        patternSlider.input(() => patternVal.html(patternSlider.value()));
+        edgeSlider.input(() => edgeVal.html(edgeSlider.value()));
+
+        getConnectedCameras();
+      }
+
+      function getConnectedCameras() {
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+          cameraSelect.html(''); 
+          let hasCamera = false;
+
+          devices.forEach(device => {
+            if (device.kind === 'videoinput') {
+              hasCamera = true;
+              let label = device.label || 'Camera ' + (cameraSelect.elt.options.length + 1);
+              let option = createElement('option', label);
+              option.value(device.deviceId);
+              cameraSelect.child(option);
+            }
+          });
+
+          if (hasCamera) {
+            cameraSelect.changed(switchCamera); 
+          } else {
+            cameraSelect.child(createElement('option', 'No camera found'));
+          }
+        }).catch(err => {
+          console.error("카메라 목록을 불러올 수 없습니다:", err);
+        });
+      }
+
+      function switchCamera() {
+        let selectedDeviceId = cameraSelect.value();
+        let constraints = {
+          video: { deviceId: { exact: selectedDeviceId } }
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+          .then(stream => {
+            video.elt.srcObject = stream; 
+          })
+          .catch(err => {
+            console.error("카메라 전환 실패:", err);
+          });
+      }
+
+      function classifyFrame() {
+        if (!modelLoaded) return;
+        classifier.classify((err, results) => {
+          if (err) {
+            setTimeout(classifyFrame, 100);
+            return;
+          }
+          predictions = Array.isArray(results) ? results.slice(0, 3) : [];
+          if (predictions.length > 0) {
+            const newLabel = predictions[0].label.split(",")[0].trim();
+            if (labelHistory[labelHistory.length - 1] !== newLabel) {
+              labelHistory.push(newLabel);
+              if (labelHistory.length > 15) labelHistory.shift();
+            }
+          }
+          classifyFrame();
+        });
+      }
+
+      function draw() {
+        background(0);
+        drawVideoCover(video, width, height);
+
+        const hasPredictions = predictions.length > 0;
+        const topConf = hasPredictions ? predictions[0].confidence : 0;
+        const lakeDetected = predictions.some((p) => lakeKeywords.some((kw) => p.label.toLowerCase().includes(kw)));
+
+        let focusSetting = focusSlider.value();
+        let patternSetting = patternSlider.value();
+        let edgeSetting = edgeSlider.value();
+        let dataViewMode = numberViewSelect.value();
+
+        if (hasPredictions && !lakeDetected) {
+           drawInteractiveGradCAM(topConf, focusSetting, patternSetting, edgeSetting, dataViewMode);
+        }
+
+        if (lakeDetected) {
+          feedbackIntensity = lerp(feedbackIntensity, 255, 0.05); 
+        } else {
+          feedbackIntensity = lerp(feedbackIntensity, 0, 0.05);  
+        }
+        if (feedbackIntensity > 1) {
+          drawHallucination(feedbackIntensity);
+        }
+
+        drawOverlay(hasPredictions, lakeDetected);
+      }
+
+      function drawVideoCover(src, targetW, targetH) {
+        const sourceW = src.width || 640;
+        const sourceH = src.height || 480;
+        const sourceRatio = sourceW / sourceH;
+        const targetRatio = targetW / targetH;
+        let drawW, drawH;
+        if (sourceRatio > targetRatio) {
+          drawH = targetH;
+          drawW = drawH * sourceRatio;
+        } else {
+          drawW = targetW;
+          drawH = drawW / sourceRatio;
+        }
+        image(src, (targetW - drawW) / 2, (targetH - drawH) / 2, drawW, drawH);
+      }
+
+      // 🔥 연하고 부드러운 프로젝션용 히트맵 🔥
+      function drawInteractiveGradCAM(confidence, focus, detail, edge, viewMode) {
+        push();
+        let gridSize = floor(map(detail, 10, 100, 100, 25)); 
+        // 전체적인 투명도 배율을 대폭 낮춤 (기존 0.5~2.5 -> 0.2~1.2)
+        let alphaMult = map(confidence, 0, 1, 0.2, 1.2); 
+        let focusSpread = map(focus, 10, 100, width * 0.7, width * 0.2);
+
+        noStroke();
+
+        for (let x = 0; x < width; x += gridSize) {
+          for (let y = 0; y < height; y += gridSize) {
+
+            let focusPoint1X = width / 2 + (noise(frameCount * 0.01) - 0.5) * 400;
+            let focusPoint1Y = height / 2 + (noise(frameCount * 0.01 + 100) - 0.5) * 400;
+            let focusPoint2X = width / 2 + (noise(frameCount * 0.015 + 200) - 0.5) * 500;
+            let focusPoint2Y = height / 2 + (noise(frameCount * 0.015 + 300) - 0.5) * 500;
+
+            let dist1 = dist(x, y, focusPoint1X, focusPoint1Y);
+            let dist2 = dist(x, y, focusPoint2X, focusPoint2Y);
+
+            let heat1 = map(dist1, 0, focusSpread, 255, 0);
+            let heat2 = map(dist2, 0, focusSpread * 1.5, 180, 0);
+            let totalHeat = max(0, heat1) + max(0, heat2);
+
+            let isEdgeBlock = false;
+            let edgeValue = 0;
+
+            if (edge > 20) {
+              edgeValue = noise(x * 0.1, y * 0.1, frameCount * 0.05);
+              if (edgeValue > map(edge, 20, 100, 0.8, 0.4)) {
+                isEdgeBlock = true;
+              }
+            }
+
+            if (isEdgeBlock) {
+              // 엣지 블록: 쨍한 레드가 아닌 약간 코랄/핑크빛으로 변경하고 투명도 대폭 낮춤
+              fill(255, 100, 100, (totalHeat + 100) * alphaMult * 0.35);
+              rect(x, y, gridSize, gridSize);
+              drawBlockText(viewMode, x, y, gridSize, true, totalHeat, edgeValue);
+
+            } else if (totalHeat > 10) {
+              // 일반 블록: 아주 연한 핑크/오렌지 빛으로 배경에 묻어나게 변경
+              fill(255, 120, 120, totalHeat * alphaMult * 0.15);
+              rect(x, y, gridSize, gridSize);
+              drawBlockText(viewMode, x, y, gridSize, false, totalHeat, edgeValue);
+            }
+          }
+        }
+        pop();
+      }
+
+      // 🔥 연하고 은은한 숫자 표시 🔥
+      function drawBlockText(mode, x, y, size, isEdge, heat, edgeVal) {
+        if (mode === 'none') return;
+
+        push();
+        textAlign(CENTER, CENTER);
+        
+        let tSize = max(10, size * 0.23); 
+        textSize(tSize);
+        
+        // 텍스트 색상을 매우 연한 회색/흰색으로 조정하여 프로젝션 이미지를 가리지 않게 함
+        fill(255, isEdge ? 130 : 50);
+
+        if (mode === 'confidence') {
+          let baseConf = map(heat, 0, 435, 10, 85);
+          if (isEdge) baseConf += 10;
+          baseConf = constrain(baseConf, 0, 99);
+          text(floor(baseConf) + "%", x + size / 2, y + size / 2);
+
+        } else if (mode === 'pattern') {
+          let rawVal = isEdge ? edgeVal : noise(x * 0.05, y * 0.05);
+          text(rawVal.toFixed(2), x + size / 2, y + size / 2);
+        }
+        pop();
+      }
+
+      function drawHallucination(intensity) {
+        push();
+        noStroke();
+        let cols = floor(width / 35);
+        let rows = floor(height / 35);
+        for (let i = 0; i < cols; i++) {
+          for (let j = 0; j < rows; j++) {
+            let x = i * 35;
+            let y = j * 35;
+            let n = noise(i * 0.08, j * 0.08, noiseZ);
+            if (n > 0.45) {
+              // 환각 모드의 파란색도 약간 연하게 조정
+              fill(0, 150 + (n * 100), 255, intensity * n * 0.7);
+              textSize(16);
+              let char = n > 0.65 ? "LAKE" : n > 0.55 ? "WATER" : "01";
+              text(char, x + random(-1, 1), y + random(-1, 1));
+            }
+          }
+        }
+        noiseZ += 0.025; 
+        pop();
+      }
+
+      function drawOverlay(hasPredictions, lakeDetected) {
+        // 기존 UI 데이터 가져오기
+        const topConf = hasPredictions ? parseFloat((predictions[0].confidence * 100).toFixed(1)) : 0;
+        const edgeSetting = edgeSlider.value();
+        const focusSetting = focusSlider.value();
+
+        noFill();
+        stroke(255, 60);
+        strokeWeight(1);
+        const r = 50;
+        line(width / 2 - r, height / 2, width / 2 - r * 0.3, height / 2);
+        line(width / 2 + r * 0.3, height / 2, width / 2 + r, height / 2);
+        line(width / 2, height / 2 - r, width / 2, height / 2 - r * 0.3);
+        line(width / 2, height / 2 + r * 0.3, width / 2, height / 2 + r);
+
+        if (hasPredictions) {
+          let topLabel = predictions[0].label.split(",")[0].trim().toUpperCase();
+          
+          let machineEmotion = "NEUTRAL (SCANNING...)"; 
+          let emotionColor = color(255, 255, 255, 120); // 텍스트 감정 투명도 낮춤
+
+          if (edgeSetting > 70 && topConf < 30) {
+            machineEmotion = "ERROR : PANIC / DATA OVERLOAD"; 
+            emotionColor = color(255, 100, 100, 200);
+          } else if (focusSetting > 80 && topConf > 70) {
+            machineEmotion = "STATE : OBSESSIVE FIXATION"; 
+            emotionColor = color(255, 180, 50, 200);
+          } else if (lakeDetected && topConf < 50) {
+            machineEmotion = "STATE : COGNITIVE DOUBT"; 
+            emotionColor = color(255, 255, 100, 200);
+          } else if (topConf < 15) {
+            machineEmotion = "STATE : ANXIETY / LOST"; 
+            emotionColor = color(180, 180, 180, 200);
+          } else if (lakeDetected) {
+            machineEmotion = "STATE : HALLUCINATING"; 
+            emotionColor = color(0, 200, 255, 200);
+          }
+
+          push();
+          textAlign(CENTER, TOP);
+          
+          textSize(min(width, height) * 0.06); 
+          textStyle(BOLD);
+          drawingContext.shadowBlur = 10; // 그림자도 살짝 줄여서 프로젝터에서 덜 퍼지게
+          drawingContext.shadowColor = "rgba(0, 0, 0, 0.8)";
+          fill(lakeDetected ? color(0, 200, 255) : 255);
+          text("- " + topLabel + " -", width / 2, 30); 
+
+          textSize(14);
+          textStyle(NORMAL);
+          letterSpacing = 3;
+          fill(emotionColor);
+          text("[" + machineEmotion + "]", width / 2, 30 + min(width, height) * 0.08);
+          pop();
+        }
+
+        textAlign(CENTER, CENTER);
+        if (lakeDetected) {
+          push();
+          drawingContext.shadowBlur = 20;
+          drawingContext.shadowColor = "rgba(0, 200, 255, 0.8)";
+          fill(255);
+          textStyle(BOLD);
+          textSize(min(width, height) * 0.12);
+          text("LAKE DETECTED", width / 2, height / 2);
+          pop();
+        }
+
+        push();
+        textAlign(LEFT, TOP);
+        textSize(15);
+        textStyle(NORMAL);
+        if (!hasPredictions) {
+          fill(255, 80);
+          text("SYSTEM INITIALIZING...", 30, 30);
+        } else {
+          fill(255, 200);
+          text("AI VISION ANALYSIS", 30, 80); 
+          predictions.forEach((p, i) => {
+            const label = p.label.split(",")[0].trim().toUpperCase();
+            const conf = parseFloat((p.confidence * 100).toFixed(1));
+            const y = 120 + i * 50;
+            fill(255, 120);
+            text(`${label} : ${conf}%`, 30, y);
+            fill(255, 20);
+            rect(30, y + 20, 180, 4);
+            fill(lakeDetected ? color(0, 200, 255, 150) : color(255, 100, 100, 150));
+            rect(30, y + 20, map(conf, 0, 100, 0, 180), 4);
+          });
+        }
+        pop();
+
+        push();
+        textAlign(RIGHT, BOTTOM);
+        textSize(13);
+        fill(255, 80);
+        text("SYSTEM HISTORY LOG", width - 30, height - 30 - labelHistory.length * 20);
+        labelHistory.forEach((label, i) => {
+          const alpha = map(i, 0, labelHistory.length - 1, 30, 150);
+          fill(255, alpha);
+          text("> " + label, width - 30, height - 30 - (labelHistory.length - 1 - i) * 20);
+        });
+        pop();
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </body>
+</html>
