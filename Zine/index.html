@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Perception Interface - Projection Mode</title>
+    <title>AI Perception Interface - Concise Emotions</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
     <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
@@ -72,9 +72,9 @@
         width: 16px;
         height: 16px;
         border-radius: 50%;
-        background: #ff3333;
+        background: #ffffff; 
         cursor: pointer;
-        box-shadow: 0 0 10px rgba(255, 50, 50, 0.8);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
       }
 
       .control-value {
@@ -82,15 +82,15 @@
         text-align: right;
         font-size: 14px;
         font-weight: bold;
-        color: #ff3333;
+        color: #ffffff;
       }
 
       .control-select {
         flex: 2;
         margin: 0 15px;
         background: rgba(0, 0, 0, 0.5);
-        color: #ff3333;
-        border: 1px solid rgba(255, 50, 50, 0.5);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.5);
         padding: 5px 10px;
         font-family: 'Courier New', Courier, monospace;
         font-size: 14px;
@@ -109,7 +109,7 @@
         bottom: 20px;
         left: 20px;
         z-index: 10;
-        color: rgba(255, 255, 255, 0.5); /* 텍스트도 프로젝션을 위해 연하게 조정 */
+        color: rgba(255, 255, 255, 0.5); 
         font-family: 'Courier New', Courier, monospace;
         font-size: 16px;
         font-style: italic;
@@ -168,6 +168,30 @@
       let feedbackIntensity = 0; 
       let noiseZ = 0; 
 
+      // 🔥 간결하고 직관적인 감정 단어 32개 풀 🔥
+      const emotionsApathy = [
+        "CALM", "NUMB", "BORED", "EMPTY", "ASLEEP"
+      ];
+      const emotionsFixation = [
+        "OBSESSED", "FIXATED", "STUCK", "CERTAIN", "RIGID", "TRAPPED"
+      ];
+      const emotionsParanoia = [
+        "PANIC", "PARANOIA", "FEAR", "ALERT", "SHOCK"
+      ];
+      const emotionsHallucination = [
+        "DREAMING", "DELUDED", "MYSTERY", "FLOATING", "HYPNOTIZED", "HAPPY"
+      ];
+      const emotionsChaos = [
+        "VERTIGO", "DOUBT", "LOST", "CONFUSED", "DIZZY", "CHAOS", "ERROR", "GLITCH", "ANXIOUS"
+      ];
+      const emotionsNeutral = [
+        "NEUTRAL", "SCANNING", "WAITING", "CURIOUS"
+      ];
+
+      let currentEmotion = "NEUTRAL";
+      let lastEmotionChangeFrame = 0;
+      let previousTopLabel = "";
+
       const lakeKeywords = ["lake", "ocean", "water", "seashore", "river", "sea"];
 
       let focusSlider, patternSlider, edgeSlider, numberViewSelect, cameraSelect;
@@ -206,7 +230,6 @@
         navigator.mediaDevices.enumerateDevices().then(devices => {
           cameraSelect.html(''); 
           let hasCamera = false;
-
           devices.forEach(device => {
             if (device.kind === 'videoinput') {
               hasCamera = true;
@@ -216,7 +239,6 @@
               cameraSelect.child(option);
             }
           });
-
           if (hasCamera) {
             cameraSelect.changed(switchCamera); 
           } else {
@@ -229,17 +251,10 @@
 
       function switchCamera() {
         let selectedDeviceId = cameraSelect.value();
-        let constraints = {
-          video: { deviceId: { exact: selectedDeviceId } }
-        };
-
+        let constraints = { video: { deviceId: { exact: selectedDeviceId } } };
         navigator.mediaDevices.getUserMedia(constraints)
-          .then(stream => {
-            video.elt.srcObject = stream; 
-          })
-          .catch(err => {
-            console.error("카메라 전환 실패:", err);
-          });
+          .then(stream => { video.elt.srcObject = stream; })
+          .catch(err => { console.error("카메라 전환 실패:", err); });
       }
 
       function classifyFrame() {
@@ -252,7 +267,7 @@
           predictions = Array.isArray(results) ? results.slice(0, 3) : [];
           if (predictions.length > 0) {
             const newLabel = predictions[0].label.split(",")[0].trim();
-            if (labelHistory[labelHistory.length - 1] !== newLabel) {
+            if (labelHistory.length === 0 || labelHistory[labelHistory.length - 1] !== newLabel) {
               labelHistory.push(newLabel);
               if (labelHistory.length > 15) labelHistory.shift();
             }
@@ -264,9 +279,9 @@
       function draw() {
         background(0);
         drawVideoCover(video, width, height);
-
+        
         const hasPredictions = predictions.length > 0;
-        const topConf = hasPredictions ? predictions[0].confidence : 0;
+        const topConf = hasPredictions ? parseFloat((predictions[0].confidence * 100).toFixed(1)) : 0;
         const lakeDetected = predictions.some((p) => lakeKeywords.some((kw) => p.label.toLowerCase().includes(kw)));
 
         let focusSetting = focusSlider.value();
@@ -287,7 +302,7 @@
           drawHallucination(feedbackIntensity);
         }
 
-        drawOverlay(hasPredictions, lakeDetected);
+        drawOverlay(hasPredictions, lakeDetected, topConf, focusSetting, patternSetting, edgeSetting);
       }
 
       function drawVideoCover(src, targetW, targetH) {
@@ -306,19 +321,16 @@
         image(src, (targetW - drawW) / 2, (targetH - drawH) / 2, drawW, drawH);
       }
 
-      // 🔥 연하고 부드러운 프로젝션용 히트맵 🔥
       function drawInteractiveGradCAM(confidence, focus, detail, edge, viewMode) {
         push();
         let gridSize = floor(map(detail, 10, 100, 100, 25)); 
-        // 전체적인 투명도 배율을 대폭 낮춤 (기존 0.5~2.5 -> 0.2~1.2)
-        let alphaMult = map(confidence, 0, 1, 0.2, 1.2); 
+        let alphaMult = map(confidence, 0, 100, 0.2, 1.2); 
         let focusSpread = map(focus, 10, 100, width * 0.7, width * 0.2);
 
         noStroke();
 
         for (let x = 0; x < width; x += gridSize) {
           for (let y = 0; y < height; y += gridSize) {
-
             let focusPoint1X = width / 2 + (noise(frameCount * 0.01) - 0.5) * 400;
             let focusPoint1Y = height / 2 + (noise(frameCount * 0.01 + 100) - 0.5) * 400;
             let focusPoint2X = width / 2 + (noise(frameCount * 0.015 + 200) - 0.5) * 500;
@@ -342,13 +354,10 @@
             }
 
             if (isEdgeBlock) {
-              // 엣지 블록: 쨍한 레드가 아닌 약간 코랄/핑크빛으로 변경하고 투명도 대폭 낮춤
               fill(255, 100, 100, (totalHeat + 100) * alphaMult * 0.35);
               rect(x, y, gridSize, gridSize);
               drawBlockText(viewMode, x, y, gridSize, true, totalHeat, edgeValue);
-
             } else if (totalHeat > 10) {
-              // 일반 블록: 아주 연한 핑크/오렌지 빛으로 배경에 묻어나게 변경
               fill(255, 120, 120, totalHeat * alphaMult * 0.15);
               rect(x, y, gridSize, gridSize);
               drawBlockText(viewMode, x, y, gridSize, false, totalHeat, edgeValue);
@@ -358,17 +367,12 @@
         pop();
       }
 
-      // 🔥 연하고 은은한 숫자 표시 🔥
       function drawBlockText(mode, x, y, size, isEdge, heat, edgeVal) {
         if (mode === 'none') return;
-
         push();
         textAlign(CENTER, CENTER);
-        
         let tSize = max(10, size * 0.23); 
         textSize(tSize);
-        
-        // 텍스트 색상을 매우 연한 회색/흰색으로 조정하여 프로젝션 이미지를 가리지 않게 함
         fill(255, isEdge ? 130 : 50);
 
         if (mode === 'confidence') {
@@ -376,7 +380,6 @@
           if (isEdge) baseConf += 10;
           baseConf = constrain(baseConf, 0, 99);
           text(floor(baseConf) + "%", x + size / 2, y + size / 2);
-
         } else if (mode === 'pattern') {
           let rawVal = isEdge ? edgeVal : noise(x * 0.05, y * 0.05);
           text(rawVal.toFixed(2), x + size / 2, y + size / 2);
@@ -387,32 +390,34 @@
       function drawHallucination(intensity) {
         push();
         noStroke();
-        let cols = floor(width / 35);
-        let rows = floor(height / 35);
+        fill(0, 50, 150, intensity * 0.15);
+        rect(0, 0, width, height);
+
+        let cols = floor(width / 80);
+        let rows = floor(height / 80);
         for (let i = 0; i < cols; i++) {
           for (let j = 0; j < rows; j++) {
-            let x = i * 35;
-            let y = j * 35;
-            let n = noise(i * 0.08, j * 0.08, noiseZ);
-            if (n > 0.45) {
-              // 환각 모드의 파란색도 약간 연하게 조정
-              fill(0, 150 + (n * 100), 255, intensity * n * 0.7);
-              textSize(16);
-              let char = n > 0.65 ? "LAKE" : n > 0.55 ? "WATER" : "01";
-              text(char, x + random(-1, 1), y + random(-1, 1));
+            let x = i * 80;
+            let y = j * 80;
+            let n = noise(i * 0.04, j * 0.04, noiseZ);
+            
+            if (n > 0.55) {
+              fill(150, 200, 255, intensity * n * 0.8);
+              textSize(map(n, 0.55, 1, 16, 32));
+              textAlign(CENTER, CENTER);
+              textStyle(ITALIC);
+              let char = n > 0.75 ? "LAKE" : "WATER";
+              let xOffset = (noise(x, y, frameCount * 0.01) - 0.5) * 40;
+              let yOffset = (noise(x + 100, y + 100, frameCount * 0.01) - 0.5) * 40;
+              text(char, x + 40 + xOffset, y + 40 + yOffset);
             }
           }
         }
-        noiseZ += 0.025; 
+        noiseZ += 0.015; 
         pop();
       }
 
-      function drawOverlay(hasPredictions, lakeDetected) {
-        // 기존 UI 데이터 가져오기
-        const topConf = hasPredictions ? parseFloat((predictions[0].confidence * 100).toFixed(1)) : 0;
-        const edgeSetting = edgeSlider.value();
-        const focusSetting = focusSlider.value();
-
+      function drawOverlay(hasPredictions, lakeDetected, topConf, focusSetting, patternSetting, edgeSetting) {
         noFill();
         stroke(255, 60);
         strokeWeight(1);
@@ -422,44 +427,50 @@
         line(width / 2, height / 2 - r, width / 2, height / 2 - r * 0.3);
         line(width / 2, height / 2 + r * 0.3, width / 2, height / 2 + r);
 
-        if (hasPredictions) {
-          let topLabel = predictions[0].label.split(",")[0].trim().toUpperCase();
+        let currentTopLabel = hasPredictions ? predictions[0].label.split(",")[0].trim().toUpperCase() : "SCANNING...";
+        let labelChanged = (currentTopLabel !== previousTopLabel);
+        
+        if (labelChanged || frameCount - lastEmotionChangeFrame > 90) {
           
-          let machineEmotion = "NEUTRAL (SCANNING...)"; 
-          let emotionColor = color(255, 255, 255, 120); // 텍스트 감정 투명도 낮춤
-
-          if (edgeSetting > 70 && topConf < 30) {
-            machineEmotion = "ERROR : PANIC / DATA OVERLOAD"; 
-            emotionColor = color(255, 100, 100, 200);
-          } else if (focusSetting > 80 && topConf > 70) {
-            machineEmotion = "STATE : OBSESSIVE FIXATION"; 
-            emotionColor = color(255, 180, 50, 200);
-          } else if (lakeDetected && topConf < 50) {
-            machineEmotion = "STATE : COGNITIVE DOUBT"; 
-            emotionColor = color(255, 255, 100, 200);
-          } else if (topConf < 15) {
-            machineEmotion = "STATE : ANXIETY / LOST"; 
-            emotionColor = color(180, 180, 180, 200);
+          let pool = emotionsNeutral;
+          
+          if (focusSetting <= 30 && patternSetting <= 30 && edgeSetting <= 30) {
+            pool = emotionsApathy;
           } else if (lakeDetected) {
-            machineEmotion = "STATE : HALLUCINATING"; 
-            emotionColor = color(0, 200, 255, 200);
+            pool = emotionsHallucination;
+          } else if (edgeSetting > 70 && topConf < 40) {
+            pool = emotionsParanoia;
+          } else if (focusSetting > 70 && topConf > 60) {
+            pool = emotionsFixation;
+          } else if (topConf < 50) {
+            pool = emotionsChaos; 
           }
 
+          currentEmotion = random(pool);
+          previousTopLabel = currentTopLabel;
+          lastEmotionChangeFrame = frameCount;
+        }
+
+        if (hasPredictions) {
           push();
           textAlign(CENTER, TOP);
           
-          textSize(min(width, height) * 0.06); 
+          let mainWordSize = min(width, height) * 0.06;
+          textSize(mainWordSize); 
           textStyle(BOLD);
-          drawingContext.shadowBlur = 10; // 그림자도 살짝 줄여서 프로젝터에서 덜 퍼지게
+          drawingContext.shadowBlur = 10;
           drawingContext.shadowColor = "rgba(0, 0, 0, 0.8)";
-          fill(lakeDetected ? color(0, 200, 255) : 255);
-          text("- " + topLabel + " -", width / 2, 30); 
+          
+          fill(255);
+          text("- " + currentTopLabel + " -", width / 2, 40); 
 
-          textSize(14);
-          textStyle(NORMAL);
-          letterSpacing = 3;
-          fill(emotionColor);
-          text("[" + machineEmotion + "]", width / 2, 30 + min(width, height) * 0.08);
+          // 🔥 상단 감정 텍스트 (Emotion: 접두사 추가 및 브라켓 제거) 🔥
+          let emotionTopSize = min(width, height) * 0.035;
+          textSize(emotionTopSize);
+          textStyle(BOLD);
+          letterSpacing = 2;
+          fill(255); 
+          text("Emotion: " + currentEmotion, width / 2, 50 + mainWordSize + 10);
           pop();
         }
 
@@ -489,11 +500,11 @@
             const label = p.label.split(",")[0].trim().toUpperCase();
             const conf = parseFloat((p.confidence * 100).toFixed(1));
             const y = 120 + i * 50;
-            fill(255, 120);
+            fill(255, 180); 
             text(`${label} : ${conf}%`, 30, y);
             fill(255, 20);
             rect(30, y + 20, 180, 4);
-            fill(lakeDetected ? color(0, 200, 255, 150) : color(255, 100, 100, 150));
+            fill(255, 150);
             rect(30, y + 20, map(conf, 0, 100, 0, 180), 4);
           });
         }
@@ -501,9 +512,23 @@
 
         push();
         textAlign(RIGHT, BOTTOM);
+        let historyLogYOffset = 30 + labelHistory.length * 20;
+        
+        textSize(14);
+        textStyle(NORMAL);
+        fill(255, 150); 
+        text("CURRENT EMOTION STATE", width - 30, height - historyLogYOffset - 50);
+        
+        // 🔥 하단 감정 텍스트 (Emotion: 접두사 추가) 🔥
+        textSize(24);
+        textStyle(BOLD);
+        fill(255); 
+        text("Emotion: " + currentEmotion, width - 30, height - historyLogYOffset - 20);
+        
         textSize(13);
+        textStyle(NORMAL);
         fill(255, 80);
-        text("SYSTEM HISTORY LOG", width - 30, height - 30 - labelHistory.length * 20);
+        text("SYSTEM HISTORY LOG", width - 30, height - historyLogYOffset);
         labelHistory.forEach((label, i) => {
           const alpha = map(i, 0, labelHistory.length - 1, 30, 150);
           fill(255, alpha);
