@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Perception Interface - Concise Emotions</title>
+    <title>AI Perception Interface - Auto Hide UI</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
     <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
@@ -25,11 +25,27 @@
         z-index: 1;
       }
       
+      /* 🔥 마우스를 감지하는 투명한 트리거 영역 (화면 맨 아래 60px) 🔥 */
+      #hover-trigger {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px; 
+        z-index: 20;
+      }
+
+      /* 🔥 컨트롤 패널 디자인 (기본적으로 숨겨짐) 🔥 */
       #control-panel {
         position: absolute;
         bottom: 20px;
         left: 50%;
-        transform: translateX(-50%);
+        /* 화면 아래로 150% 만큼 밀어내서 숨기고, 투명도를 0으로 설정 */
+        transform: translateX(-50%) translateY(150%);
+        opacity: 0; 
+        /* 부드럽게 나타나고 사라지는 애니메이션 효과 */
+        transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+        
         width: 90%;
         max-width: 600px;
         background: rgba(20, 20, 20, 0.85);
@@ -39,6 +55,13 @@
         z-index: 10;
         backdrop-filter: blur(10px);
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+
+      /* 🔥 마우스가 바닥(트리거)에 닿거나, 패널 위에 있을 때 나타남 🔥 */
+      #hover-trigger:hover + #control-panel,
+      #control-panel:hover {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
       }
       
       .control-group {
@@ -109,7 +132,7 @@
         bottom: 20px;
         left: 20px;
         z-index: 10;
-        color: rgba(255, 255, 255, 0.5); 
+        color: rgba(255, 255, 255, 0.3); /* 글씨를 더 연하게 수정 */
         font-family: 'Courier New', Courier, monospace;
         font-size: 16px;
         font-style: italic;
@@ -123,6 +146,8 @@
     <div id="instruction-text">
       SYSTEM READY<br>Awaiting optical input...
     </div>
+
+    <div id="hover-trigger"></div>
 
     <div id="control-panel">
       <div class="control-group">
@@ -168,7 +193,6 @@
       let feedbackIntensity = 0; 
       let noiseZ = 0; 
 
-      // 🔥 간결하고 직관적인 감정 단어 32개 풀 🔥
       const emotionsApathy = [
         "CALM", "NUMB", "BORED", "EMPTY", "ASLEEP"
       ];
@@ -464,7 +488,6 @@
           fill(255);
           text("- " + currentTopLabel + " -", width / 2, 40); 
 
-          // 🔥 상단 감정 텍스트 (Emotion: 접두사 추가 및 브라켓 제거) 🔥
           let emotionTopSize = min(width, height) * 0.035;
           textSize(emotionTopSize);
           textStyle(BOLD);
@@ -519,7 +542,6 @@
         fill(255, 150); 
         text("CURRENT EMOTION STATE", width - 30, height - historyLogYOffset - 50);
         
-        // 🔥 하단 감정 텍스트 (Emotion: 접두사 추가) 🔥
         textSize(24);
         textStyle(BOLD);
         fill(255); 
