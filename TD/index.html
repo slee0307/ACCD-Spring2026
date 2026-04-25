@@ -52,15 +52,31 @@ h2 {
 /* ===== CARD ===== */
 .card {
   background: #0d0d0d;
-  padding: 20px;
-  margin: 20px 0;
   border-radius: 12px;
   border: 1px solid #1a1a1a;
   transition: 0.2s;
+  overflow: hidden;
+  margin: 0;
 }
 
 .card:hover {
   border: 1px solid #333;
+}
+
+.card iframe {
+  width: 100%;
+  height: 200px;
+  border: none;
+  border-radius: 10px 10px 0 0;
+}
+
+.card p {
+  padding: 10px;
+  margin: 0;
+  color: #ddd;
+  font-size: 14px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
 }
 
 /* ===== IMAGE ===== */
@@ -167,16 +183,11 @@ p {
 }
 
 .category-description {
-  width: 100%;
-  padding: 12px;
-  background: #111;
-  border: 1px solid #222;
-  border-radius: 8px;
   color: #ddd;
   font-size: 14px;
-  resize: vertical;
-  min-height: 60px;
   font-family: "Helvetica Neue", Arial, sans-serif;
+  margin-top: 10px;
+  line-height: 1.5;
 }
 
 /* ===== GALLERY ===== */
@@ -207,6 +218,14 @@ p {
   border-radius: 12px;
 }
 
+/* ===== VIDEO GRID ===== */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
 </style>
 </head>
 
@@ -214,7 +233,7 @@ p {
 
 <header>
   <h1>Digital Materiality</h1>
-  <p>Permutation, Intention, Complexity, Control</p>
+ 
 </header>
 
 <section>
@@ -251,7 +270,8 @@ p {
         <video src="asset/2.mov" controls></video>
       </div>
     </div>
-    <textarea class="category-description" placeholder="Add description for Category 1..."></textarea>
+    <p class="category-description">A 2D system was made using simple shapes and noise. Edge and displacement effects were added, and feedback loops made the image change over time. Ramp and HSV nodes were used to add color.</p>
+    <p class="category-description">Reference: In-class exercise</p>
   </div>
 
   <div class="category">
@@ -267,7 +287,8 @@ p {
         <video src="asset/5.mov" controls></video>
       </div>
     </div>
-    <textarea class="category-description" placeholder="Add description for Category 2..."></textarea>
+    <p class="category-description">Based on the Category 1 node setup, a circle node was added, and HSV Adjust was used to modify the color, creating a new form.</p>
+    <p class="category-description">Reference: In-class exercise</p>
   </div>
 
   <div class="category">
@@ -286,7 +307,8 @@ p {
         <video src="asset/9.mov" controls></video>
       </div>
     </div>
-    <textarea class="category-description" placeholder="Add description for Category 3..."></textarea>
+    <p class="category-description">Sound input was analyzed using CHOP nodes and converted into data. This data was used to control visual changes in the system. The visuals were built using noise, edge, displacement, and feedback nodes, creating patterns that respond to sound over time.</p>
+    <p class="category-description">Reference Tutorial: <a href="https://www.youtube.com/watch?v=8ABSC0gkJrU&t=1s" target="_blank">YouTube Tutorial</a></p>
   </div>
 
   <div class="category">
@@ -305,11 +327,27 @@ p {
         <video src="asset/14.mov" controls></video>
       </div>
     </div>
-    <textarea class="category-description" placeholder="Add description for Category 4..."></textarea>
+    <p class="category-description">A point generator was used to create the initial structure. LFO CHOPs controlled time-based changes, while noise and feedback nodes generated evolving patterns. A bloom effect was added to enhance brightness and visual intensity.</p>
+    <p class="category-description">Reference Tutorial: <a href="https://www.youtube.com/watch?v=rLuFBhFJhVU&t=1s" target="_blank">YouTube Tutorial</a></p>
   </div>
 
   <div class="category">
     <h3>Category 5</h3>
+    <div class="video-grid">
+      <div class="card">
+        <iframe src="https://www.youtube-nocookie.com/embed/feQWKJ20-s0?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <p><strong></strong> A sphere was created and changed using noise to make an organic shape. It was then rendered with lighting and a camera.</p>
+      </div>
+      <div class="card">
+        <iframe src="https://www.youtube-nocookie.com/embed/LIOVtU3AubY?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <p><strong></strong> A box geometry was used, and noise-driven point transformations created dynamic motion. The result was rendered in a 3D scene.</p>
+      </div>
+    </div>
+    <p class="category-description">Reference: In-class exercise</p>
+  </div>
+
+  <div class="category">
+    <h3>Category 6</h3>
     <div class="category-gallery">
       <div class="gallery-item">
         <video src="asset/15.mov" controls></video>
@@ -320,53 +358,34 @@ p {
       <div class="gallery-item">
         <video src="asset/17.mov" controls></video>
       </div>
+      <div class="gallery-item">
+        <video src="asset/21.mov" controls></video>
+      </div>
+      <div class="gallery-item">
+        <iframe src="https://www.youtube-nocookie.com/embed/tesP7QkB7fs?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
     </div>
-    <textarea class="category-description" placeholder="Add description for Category 5..."></textarea>
+    <p class="category-description">A point-based particle system was built and rendered in 3D, with audio input controlling the movement and visual effects enhancing the final result. Multiple video inputs were used, and variations in box scale and lighting were applied to create different outcomes.</p>
+    <p class="category-description">Reference Tutorial: <a href="https://www.youtube.com/watch?v=M3cGdluGKNQ&list=PL6davSEOxwn6t2ThMER3M54SqDI6-U-d7&index=19" target="_blank">YouTube Tutorial</a></p>
+  </div>
+
+  <div class="category">
+    <h3>more poinclouds...</h3>
+    <div class="category-gallery">
+      <!-- Add gallery items here -->
+    </div>
+    <p class="category-description"><!-- Add description here --></p>
   </div>
 </section>
 
-
-<section>
-  <h2>Process</h2>
-
-  <div class="card">
-    <img src="assets/process1.jpg">
-    <p>Initial system setup</p>
-  </div>
-
-  <div class="card">
-    <img src="assets/process2.jpg">
-    <p>Parameter exploration</p>
-  </div>
-
-  <div class="card">
-    <img src="assets/process3.jpg">
-    <p>Output generation</p>
-  </div>
-
-</section>
 
 <section>
   <h2>Projection Mapping</h2>
 
-  <div class="card">
-    <img src="assets/projection1.jpg">
-    <p>Projection onto complex surface</p>
-  </div>
-
-  <div class="card">
-    <img src="assets/projection2.jpg">
-    <p>Interaction between digital and physical space</p>
-  </div>
+  
 
 </section>
 
-<section>
-  <h2>Documentation Video</h2>
-
-  <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID"></iframe>
-
-</section>
 
 <section>
   <h2>Reflection</h2>
