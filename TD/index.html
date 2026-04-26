@@ -212,7 +212,8 @@ p {
 }
 
 .gallery-item video,
-.gallery-item iframe {
+.gallery-item iframe,
+.gallery-item img {
   position: absolute;
   top: 0;
   left: 0;
@@ -220,6 +221,36 @@ p {
   height: 100%;
   border: none;
   border-radius: 12px;
+  object-fit: cover;
+}
+
+.gallery-item img {
+  cursor: zoom-in;
+}
+
+.image-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 30px;
+  cursor: zoom-out;
+}
+
+.image-lightbox.active {
+  display: flex;
+}
+
+.image-lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  width: auto;
+  border-radius: 12px;
+  margin: 0;
+  object-fit: contain;
 }
 
 /* ===== VIDEO GRID ===== */
@@ -403,8 +434,17 @@ p {
       <div class="gallery-item">
         <iframe src="https://www.youtube-nocookie.com/embed/JMM6kIbLags?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
+      <div class="gallery-item">
+        <iframe src="https://www.youtube-nocookie.com/embed/PtU4AOger4c?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="gallery-item">
+        <iframe src="https://www.youtube-nocookie.com/embed/5dPuBmfpp9w?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="gallery-item">
+        <img src="asset/Mario Car.PNG" alt="Projection mapping on a car">
+      </div>
     </div>
-    <p class="category-description">I experimented with projection mapping on multiple surfaces using Kantan Mapper. It was more difficult than expected to match the projection to the shape of the sofa, and working in the dark hurt my eyes!! I projected onto the floor to create the feeling that Mario is jumping on it. I also tested projecting onto a window, but it didn't work well because it's transparent, so I tried mapping onto a refrigerator instead 😆</p>
+    <p class="category-description">I experimented with projection mapping on multiple surfaces using Kantan Mapper. It was more difficult than expected to match the projection to the shape of the sofa, and working in the dark hurt my eyes!! I projected onto the floor to create the feeling that Mario is jumping on it. I also tested projecting onto a window, but it didn't work well because it's transparent, so I tried mapping onto a refrigerator instead 😆<br><br>For Car - It would have been better if there had been an outlet extension... And when I was holding the projector, the video didn’t play properly. It kept stuttering.</p>
   </div>
 </section>
 
@@ -419,8 +459,26 @@ TouchDesigner has always been an interesting tool to me. I had been learning it 
 </p>
 </section>
 
+<div class="image-lightbox" id="imageLightbox">
+  <img src="" alt="Expanded image" id="lightboxImage">
+</div>
+
 <script>
-// Gallery format - no slideshow functionality needed
+const lightbox = document.getElementById("imageLightbox");
+const lightboxImage = document.getElementById("lightboxImage");
+
+document.querySelectorAll(".gallery-item img").forEach((image) => {
+  image.addEventListener("click", () => {
+    lightboxImage.src = image.src;
+    lightboxImage.alt = image.alt;
+    lightbox.classList.add("active");
+  });
+});
+
+lightbox.addEventListener("click", () => {
+  lightbox.classList.remove("active");
+  lightboxImage.src = "";
+});
 </script>
 
 </body>
